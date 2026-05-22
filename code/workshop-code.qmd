@@ -70,7 +70,6 @@ ww_col <- "#045CB4"
 theme_set(theme_bw())
 ```
 
-
 # 2. Clean data
 
 Data source: Valliere, Justin; Zhang, Jacqueline; Sharifi, M.; Rundel, Philip (2019). Data from: Can we condition native plants to increase drought tolerance and improve restoration success? [Dataset]. Dryad. [https://doi.org/10.5061/dryad.v0861f7](https://doi.org/10.5061/dryad.v0861f7)
@@ -78,11 +77,11 @@ Data source: Valliere, Justin; Zhang, Jacqueline; Sharifi, M.; Rundel, Philip (2
 ```{r}
 #| label: data cleaning
 
-# 
-drought_exp_clean <- drought_exp 
-  # 
-  clean_names() 
-  # 
+# making a new clean object from the original dataset 
+drought_exp_clean <- drought_exp |> 
+  # cleaning the column names for the new object 
+  clean_names() |> 
+  # updating the names in the species column from abbreviations to the full names
   mutate(species_name = case_match(
     species,
     "ENCCAL" ~ "Encelia californica", # bush sunflower
@@ -92,14 +91,13 @@ drought_exp_clean <- drought_exp
     "SALLEU" ~ "Salvia leucophylla", # purple sage
     "STIPUL" ~ "Stipa pulchra", # purple needlegrass
     "LOTSCO" ~ "Lotus scoparius" # deerweed
-  )) 
-  # 
+    )) |> 
+  # Changing the water column to water treatment and spelling out the water treatment names
   mutate(water_treatment = case_match(
     water,
     "WW" ~ "Well watered",
-    "DS" ~ "Drought stressed"
-  ))  
-  # 
+    "DS" ~ "Drought stressed"))  |> 
+  # Reordering the species names within the data sat
   mutate(species_name = as_factor(species_name),
          species_name = fct_relevel(species_name,
                                     "Lotus scoparius",
@@ -108,12 +106,12 @@ drought_exp_clean <- drought_exp
                                     "Encelia californica",
                                     "Stipa pulchra",
                                     "Eschscholzia californica",
-                                    "Grindelia camporum")) 
+                                    "Grindelia camporum")) |> 
   mutate(water_treatment = as_factor(water_treatment),
          water_treatment = fct_relevel(water_treatment,
                                        "Drought stressed",
-                                       "Well watered")) 
-  #
+                                       "Well watered")) |> 
+  # selecting the specific columns to only show in this new object
   select(species_name, water_treatment, sla, total_g)
 ```
 
