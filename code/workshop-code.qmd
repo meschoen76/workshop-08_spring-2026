@@ -354,23 +354,25 @@ Insert code to display the summary for the best model.
 summary(model4)
 ```
 
-- intercept: model prediction for plant mass for Lotus scoparius in the drought stressed treatment.
-- 
-
+- **Intercept*:** model prediction for plant mass for Lotus scoparius in the drought stressed treatment.
+- **'water_treatmentWell watered':** model prediction for the difference in Lotus scoparius mass between the well watered and drought stressed treatment 
+- **'species_namePenstemon centranthifolius':** model prediction for the difference between Penstemon mass in the well watered treatment and Lotus mass in the well watered treatment. 
+- **'species_nameEschscholzia californica'**: model prediction for the difference between Eschscholzia mass in the well watered treatment and Lotus mass in ther well watered treatment
 
 ## Stop and think: what does this model mean?  
 
 **What is the best model?**
 
-[insert your response here]
+The best model includes water treatment and species as predictors. 
 
 **How much variation in the response (total mass, in grams) does this model explain?**
 
-[insert your response here]
+72.6% of the variation in plant mass is explained by a model with both of these predictors.
 
 **How do we interpret the effects of the predictors on the response variable (again, total mass in grams)?**
 
-[insert your response here]
+- **Treatment** influences plant mass
+- **Species** influences plant mass 
 
 # 4. Model predictions
 
@@ -380,11 +382,43 @@ Rename the `x` column and `group` column to match the original data frame (`drou
 
 Look at the object before plotting.
 
+```{r}
+#| label: model-predictions
 
+preds <- ggpredict(
+  model4,
+  terms = c("water_treatment", 
+            "species_name")
+) |> 
+  rename(water_treatment = x,
+        species_name = group)
+```
 
 # 5. Final figure
 
 Create a clean, publication ready figure depicting predictions for the best model and the underlying data.
+
+```{r}
+#| label: final-figure
+
+# base layer is ggplot 
+ggplot(data = drought_exp_clean,
+       mapping = aes(x = water_treatment,
+                     y = total_g,
+                     color = water_treatment)) + 
+  facet_wrap(~ species_name) +
+  geom_jitter(height = 0,
+              width = 0.1,
+              shape = 21,
+              alpha = 0.75) +
+  geom_pointrange(data = preds,
+                  mapping = aes(x = water_treatment,
+                                y = predicted,
+                                ymin = conf.low,
+                                ymax = conf.high)) + 
+                    facet_wrap(~species_name)
+```
+
 
 
 # 6. Writing
