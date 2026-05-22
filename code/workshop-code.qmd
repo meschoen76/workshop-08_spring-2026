@@ -98,8 +98,8 @@ drought_exp_clean <- drought_exp |>
     "WW" ~ "Well watered",
     "DS" ~ "Drought stressed"))  |> 
   # Reordering the species names within the data sat
-  mutate(species_name = as_factor(species_name),
-         species_name = fct_relevel(species_name,
+  mutate(species_name = as_factor(species_name), # makes the data categorial
+         species_name = fct_relevel(species_name, # reorders the data
                                     "Lotus scoparius",
                                     "Penstemon centranthifolius",
                                     "Salvia leucophylla",
